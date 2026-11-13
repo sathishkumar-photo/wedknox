@@ -1,22 +1,48 @@
 "use client";
-import {useEffect,useRef} from "react";import {site,photos} from "@/config/site";import {wa} from "./wa";
-const floats=[photos.find(p=>p.cat==="Pre-Weddings"),photos.find(p=>p.cat==="Weddings"),photos.find(p=>p.cat==="Half Saree")].filter(Boolean) as typeof photos;
-export default function Hero(){const ref=useRef<HTMLDivElement>(null);
-useEffect(()=>{const f=(e:MouseEvent)=>{if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;
-ref.current?.style.setProperty("--x",String((e.clientX/innerWidth-.5)*30));ref.current?.style.setProperty("--y",String((e.clientY/innerHeight-.5)*30))};
-addEventListener("mousemove",f);return()=>removeEventListener("mousemove",f)},[]);
-return <section id="home" ref={ref} className="relative flex min-h-screen items-center overflow-hidden px-5 pb-12 pt-24">
-<div className="absolute inset-0 bg-gradient-to-br from-char via-ink to-ink"/>
-<div className="pointer-events-none absolute right-[8%] top-1/4 h-96 w-96 rounded-full bg-gold/20 blur-3xl" style={{transform:"translate(calc(var(--x,0)*1px),calc(var(--y,0)*1px))"}}/>
-<div className="relative mx-auto grid w-full max-w-7xl items-center gap-10 lg:grid-cols-2">
-<div className="order-2 lg:order-1"><p className="mb-4 text-sm text-mute">Wedknox Photography</p>
-<h1 className="font-serif text-6xl font-semibold leading-[.95] md:text-8xl">Wedding Stories <em className="text-gold">in Frames</em></h1>
-<p className="mt-4 font-serif text-2xl italic text-soft">Capturing Your Special Stories</p>
-<p className="mt-4 max-w-md text-mute">Transforming your most precious moments into timeless memories through cinematic photography and creative storytelling.</p>
-<div className="mt-8 flex flex-wrap gap-3">
-<a href="#portfolio" className="rounded-full bg-gold px-6 py-3 font-semibold text-ink">Explore Portfolio</a>
-<a href="#films" className="gold-border rounded-full px-6 py-3">Watch Showreel</a>
-<a href={wa("Hi Wedknox, I'd like to book a shoot.")} className="rounded-full px-6 py-3 text-gold underline">Book a Shoot</a></div></div>
-<div className="relative order-1 mx-auto h-[420px] w-full max-w-sm sm:h-[520px] lg:order-2 lg:max-w-md">
-<img src={site.photographerPhoto} alt="Wedknox photographer shooting with a Sony camera" className="gold-border h-full w-full rounded-2xl object-cover shadow-2xl" style={{transform:"translate(calc(var(--x,0)*-.3px),calc(var(--y,0)*-.3px))"}}/>
-{floats.map((p,i)=><img key={p.src} src={p.src} alt={p.alt} loading="lazy" className="gold-border absolute hidden w-28 rounded-lg object-cover shadow-xl md:block lg:w-36" style={{left:i===1?"auto":"-70px",right:i===1?"-60px":"auto",top:`${50+i*150}px`,aspectRatio:"3/4",transform:`translate(calc(var(--x,0)*${(i+1)*.8}px),calc(var(--y,0)*${(i+1)*.8}px)) rotate(${i*5-5}deg)`}}/>)}</div></div></section>}
+import { useEffect, useRef } from "react";
+import { site, photos } from "@/config/site";
+import { wa } from "./wa";
+const floats = ["Pre-Weddings", "Weddings", "Half Saree"].map(cat => photos.find(p => p.cat === cat)).filter(Boolean) as typeof photos;
+
+export default function Hero() {
+  const ref = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const fine = matchMedia("(hover: hover) and (pointer: fine)");
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+    let frame = 0;
+    const move = (e: MouseEvent) => {
+      if (!fine.matches || reduced.matches) return;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        ref.current?.style.setProperty("--x", `${(e.clientX / innerWidth - .5) * 30}px`);
+        ref.current?.style.setProperty("--y", `${(e.clientY / innerHeight - .5) * 30}px`);
+      });
+    };
+    const reset = () => { ref.current?.style.setProperty("--x", "0px"); ref.current?.style.setProperty("--y", "0px"); };
+    window.addEventListener("mousemove", move, { passive: true });
+    document.documentElement.addEventListener("mouseleave", reset);
+    return () => { cancelAnimationFrame(frame); window.removeEventListener("mousemove", move); document.documentElement.removeEventListener("mouseleave", reset); };
+  }, []);
+  return <section id="home" ref={ref} className="hero">
+    <div className="absolute inset-0 bg-gradient-to-br from-char via-ink to-ink" />
+    <div className="hero-glow" aria-hidden="true" />
+    <div className="hero-grid">
+      <div className="hero-copy">
+        <p className="hero-eyebrow text-mute">Wedknox Photography</p>
+        <h1 className="hero-title font-serif font-semibold">Wedding Stories <em className="text-gold">in Frames</em></h1>
+        <p className="hero-tagline font-serif italic text-soft">Capturing Your Special Stories</p>
+        <p className="hero-description text-mute">Transforming your most precious moments into timeless memories through cinematic photography and creative storytelling.</p>
+        <div className="hero-actions">
+          <a href="#portfolio" className="rounded-full bg-gold font-semibold text-ink">Explore Portfolio</a>
+          <a href="#films" className="gold-border rounded-full">Watch Showreel</a>
+          <a href={wa("Hi Wedknox, I'd like to book a shoot.")} className="rounded-full text-gold underline">Book a Shoot</a>
+        </div>
+      </div>
+      <div className="hero-scene">
+        <div className="hero-portrait-motion"><img src={site.photographerPhoto} alt="Wedknox photographer shooting with a Sony camera" fetchPriority="high" decoding="async" className="hero-portrait gold-border" /></div>
+        {floats.map((p, i) => <div key={p.src} className={`hero-card hero-card-${i}`}><div className="hero-card-drift"><img src={p.src} alt={p.alt} decoding="async" className="gold-border" /></div></div>)}
+      </div>
+    </div>
+    <a href="#about" className="hero-scroll text-mute" aria-label="Scroll to the story behind Wedknox">Scroll to discover <span aria-hidden="true">↓</span></a>
+  </section>;
+}
