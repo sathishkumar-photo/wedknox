@@ -74,3 +74,15 @@ a:active,button:active{transform:scale(.97)}
  .hero-portrait-motion,.hero-card,.tilt-card{transform:none!important}
  .hero-card-drift{transform:rotate(var(--angle))}
 }
+
+/* Opening logo film: contain preserves the full logo on every screen. */
+.intro-screen{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:#080808;opacity:1;transition:opacity .5s ease;isolation:isolate}
+.intro-screen-leaving{opacity:0;pointer-events:none}
+.intro-loading{position:absolute;text-align:center;font-family:var(--font-serif),serif;letter-spacing:.16em;color:#d9ad72;font-size:clamp(24px,5vw,48px);z-index:-1}
+.intro-loading span{display:block;margin-top:8px;font-family:var(--font-sans),sans-serif;font-size:10px;letter-spacing:.35em}
+.intro-video{display:block;width:100%;height:100%;max-height:100dvh;object-fit:contain;background:transparent}
+.intro-controls{position:absolute;right:max(20px,env(safe-area-inset-right));bottom:max(24px,env(safe-area-inset-bottom));display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;max-width:calc(100% - 40px)}
+.intro-button{border:1px solid #d9ad7280;border-radius:999px;background:#080808cc;color:#f8f4ef;padding:12px 20px;font-size:13px;min-height:44px;backdrop-filter:blur(8px)}
+.intro-button:hover{background:#d9ad72;color:#080808}
+.intro-site:focus{outline:none}
+@media(prefers-reduced-motion:reduce){.intro-screen-leaving{display:none}}

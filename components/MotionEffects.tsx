@@ -22,7 +22,8 @@ export default function MotionEffects() {
       });
     };
     setup(); preference.addEventListener("change", setup);
-    return () => { clear(); preference.removeEventListener("change", setup); };
+    window.addEventListener("wedknox:intro-complete", setup);
+    return () => { clear(); preference.removeEventListener("change", setup); window.removeEventListener("wedknox:intro-complete", setup); };
   }, []);
   return null;
 }
