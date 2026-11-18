@@ -1,10 +1,12 @@
+// LOCATION: components/Hero.tsx
 "use client";
 import { useEffect, useRef } from "react";
-import { site, photos } from "@/config/site";
+import type { Hero as HeroText, Photo } from "@/lib/content-schema";
 import { wa } from "./wa";
-const floats = ["Pre-Weddings", "Weddings", "Half Saree"].map(cat => photos.find(p => p.cat === cat)).filter(Boolean) as typeof photos;
 
-export default function Hero() {
+type Props = { hero: HeroText; photographerPhoto: string; floats: Photo[]; whatsapp: string };
+
+export default function Hero({ hero, photographerPhoto, floats, whatsapp }: Props) {
   const ref = useRef<HTMLElement>(null);
   useEffect(() => {
     const fine = matchMedia("(hover: hover) and (pointer: fine)");
@@ -28,18 +30,18 @@ export default function Hero() {
     <div className="hero-glow" aria-hidden="true" />
     <div className="hero-grid">
       <div className="hero-copy">
-        <p className="hero-eyebrow text-mute">Wedknox Photography</p>
-        <h1 className="hero-title font-serif font-semibold">Wedding Stories <em className="text-gold">in Frames</em></h1>
-        <p className="hero-tagline font-serif italic text-soft">Capturing Your Special Stories</p>
-        <p className="hero-description text-mute">Transforming your most precious moments into timeless memories through cinematic photography and creative storytelling.</p>
+        {hero.eyebrow && <p className="hero-eyebrow text-mute">{hero.eyebrow}</p>}
+        <h1 className="hero-title font-serif font-semibold">{hero.title} {hero.accent && <em className="text-gold">{hero.accent}</em>}</h1>
+        {hero.tagline && <p className="hero-tagline font-serif italic text-soft">{hero.tagline}</p>}
+        {hero.description && <p className="hero-description text-mute">{hero.description}</p>}
         <div className="hero-actions">
           <a href="#portfolio" className="rounded-full bg-gold font-semibold text-ink">Explore Portfolio</a>
           <a href="#films" className="gold-border rounded-full">Watch Showreel</a>
-          <a href={wa("Hi Wedknox, I'd like to book a shoot.")} className="rounded-full text-gold underline">Book a Shoot</a>
+          <a href={wa("Hi Wedknox, I'd like to book a shoot.", whatsapp)} className="rounded-full text-gold underline">Book a Shoot</a>
         </div>
       </div>
       <div className="hero-scene">
-        <div className="hero-portrait-motion"><img src={site.photographerPhoto} alt="Wedknox photographer shooting with a Sony camera" fetchPriority="high" decoding="async" className="hero-portrait gold-border" /></div>
+        <div className="hero-portrait-motion"><img src={photographerPhoto} alt="Wedknox photographer shooting with a Sony camera" fetchPriority="high" decoding="async" className="hero-portrait gold-border" /></div>
         {floats.map((p, i) => <div key={p.src} className={`hero-card hero-card-${i}`}><div className="hero-card-drift"><img src={p.src} alt={p.alt} decoding="async" className="gold-border" /></div></div>)}
       </div>
     </div>

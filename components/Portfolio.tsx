@@ -1,12 +1,13 @@
+// LOCATION: components/Portfolio.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { photos, categories } from "@/config/site";
+import type { Photo } from "@/lib/content-schema";
 
 const PREVIEW_COUNT = 8;
 
-export default function Portfolio() {
+export default function Portfolio({ photos, categories }: { photos: Photo[]; categories: string[] }) {
   const [category, setCategory] = useState("All");
   const [showAll, setShowAll] = useState(false);
   const [open, setOpen] = useState<number | null>(null);
@@ -101,6 +102,8 @@ export default function Portfolio() {
           </button>
         ))}
       </div>
+
+      {photos.length === 0 && <p className="mt-8 text-mute">New photos coming soon.</p>}
 
       {/* Photo gallery */}
       <div

@@ -1,10 +1,11 @@
+// LOCATION: components/Contact.tsx
 "use client";
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { packages, services, site } from "@/config/site";
+import type { Pkg } from "@/lib/content-schema";
 import { wa } from "./wa";
 
 const CUSTOM_PACKAGE = "Custom Pricing";
@@ -47,7 +48,9 @@ const schema = z
 
 type FormValues = z.infer<typeof schema>;
 
-export default function Contact() {
+type Props = { phone: string; whatsapp: string; serviceNames: string[]; packages: Pkg[] };
+
+export default function Contact({ phone, whatsapp, serviceNames, packages }: Props) {
   const {
     register,
     handleSubmit,
@@ -86,7 +89,7 @@ export default function Contact() {
       `\nLocation: ${data.location}` +
       (data.message ? `\nMessage: ${data.message}` : "");
 
-    window.open(wa(message), "_blank", "noopener,noreferrer");
+    window.open(wa(message, whatsapp), "_blank", "noopener,noreferrer");
     setOpened(true);
   }
 
@@ -114,13 +117,13 @@ export default function Contact() {
         </h2>
 
         <p className="mt-4 text-mute">
-          Call {site.phone} or send your details. Your enquiry
+          Call {phone} or send your details. Your enquiry
           opens in WhatsApp.
         </p>
 
         <a
           className="mt-4 block text-gold underline"
-          href={wa("Hi Wedknox!")}
+          href={wa("Hi Wedknox!", whatsapp)}
         >
           Chat on WhatsApp
         </a>
@@ -178,8 +181,8 @@ export default function Contact() {
             {...register("service")}
           >
             <option value="">Choose…</option>
-            {services.map(([name]) => (
-              <option key={name} value={name}>
+            {serviceNames.map((name, i) => (
+              <option key={`${i}-${name}`} value={name}>
                 {name}
               </option>
             ))}
@@ -196,9 +199,9 @@ export default function Contact() {
           >
             <option value="">Not sure yet</option>
 
-            {packages.map((pkg) => (
+            {packages.map((pkg, i) => (
               <option
-                key={pkg.name}
+                key={`${i}-${pkg.name}`}
                 value={`${pkg.name} (${pkg.price})`}
               >
                 {pkg.name} ({pkg.price})

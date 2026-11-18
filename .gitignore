@@ -1,3 +1,8 @@
+# LOCATION: .gitignore
 node_modules/
 .next/
 
+# Secrets: NEVER upload these to GitHub
+.env
+.env.local
+.env.*.local
