@@ -11,6 +11,7 @@ import About from "@/components/About";
 import Testimonials from "@/components/Testimonials";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import ChatBot from "@/components/ChatBot";
 import { getContent } from "@/lib/content-server";
 
 // Always load the newest content, so changes saved in /admin appear immediately.
@@ -39,6 +40,15 @@ export default async function Home() {
         <Contact phone={phone} whatsapp={whatsapp} serviceNames={c.services.map((s) => s.name)} packages={c.packages.items} />
       </main>
       <Footer phone={phone} whatsapp={whatsapp} social={c.settings.social} serviceNames={c.services.map((s) => s.name)} />
+      {/* Chat assistant: floats on every screen size. Reads packages, services, offer and reviews live from the admin content. */}
+      <ChatBot
+        whatsapp={whatsapp}
+        phone={phone}
+        packages={c.packages}
+        services={c.services}
+        categories={c.categories}
+        testimonials={c.testimonials}
+      />
     </IntroGate>
   );
 }

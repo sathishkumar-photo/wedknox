@@ -7,6 +7,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Pkg } from "@/lib/content-schema";
 import { wa } from "./wa";
+import { GetStartedButton } from "./get-started-button/GetStartedButton";
 
 const CUSTOM_PACKAGE = "Custom Pricing";
 
@@ -276,10 +277,14 @@ export default function Contact({ phone, whatsapp, serviceNames, packages }: Pro
           />
         </div>
 
-        <button
-          type="submit"
-          className="rounded-full bg-gold py-3 font-semibold text-ink"
-        >
+        {/* Liquid-chrome send button. Pressing it validates the form and opens WhatsApp, exactly like a normal submit. */}
+        <GetStartedButton
+          label={"SEND ENQUIRY\nON WHATSAPP"}
+          ariaLabel="Send enquiry on WhatsApp"
+          onActivate={() => handleSubmit(sendEnquiry)()}
+        />
+        {/* Invisible real submit button: keeps the Enter key and screen readers working. */}
+        <button type="submit" className="sr-only">
           Send Enquiry on WhatsApp
         </button>
 
